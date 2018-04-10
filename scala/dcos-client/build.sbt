@@ -162,7 +162,8 @@ scalacOptions ++= {
 
 val http4sVersion = "0.18.7"
 val testDependencies = Seq(
-  "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+  "org.scalamock" %% "scalamock" % "4.1.0" % Test,
+  "org.scalatest" %% "scalatest" % "3.0.5" % Test
 )
 libraryDependencies ++= Seq(
   "org.http4s" %% "http4s-dsl" % http4sVersion,
