@@ -161,11 +161,16 @@ scalacOptions ++= {
 }
 
 val http4sVersion = "0.18.7"
+val testDependencies = Seq(
+  "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+)
 libraryDependencies ++= Seq(
   "org.http4s" %% "http4s-dsl" % http4sVersion,
   "org.http4s" %% "http4s-blaze-client" % http4sVersion,
   "org.http4s" %% "http4s-blaze-server" % http4sVersion % "test",
   "org.http4s" %% "http4s-circe" % http4sVersion,
-  "io.circe" %% "circe-generic" % "0.9.3",
-)
-addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
+  "io.circe" %% "circe-generic" % "0.9.3"
+) ++ testDependencies
+
+addCompilerPlugin(
+  "org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
