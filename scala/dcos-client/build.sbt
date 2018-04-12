@@ -8,6 +8,7 @@ val scala212 = Seq(
   "-language:experimental.macros", // Allow macro definition (besides implementation and application)
   "-language:higherKinds", // Allow higher-kinded types
   "-language:implicitConversions", // Allow definition of implicit functions called views
+  "-language:postfixOps",
   "-unchecked", // Enable additional warnings where generated code depends on assumptions.
   "-Xcheckinit", // Wrap field accessors to throw an exception on uninitialized access.
   "-Xfuture", // Turn on future language features.

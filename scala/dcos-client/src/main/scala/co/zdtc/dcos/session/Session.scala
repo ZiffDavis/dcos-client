@@ -5,12 +5,13 @@ import org.http4s.Status.Successful
 import org.http4s.client.UnexpectedStatus
 import org.http4s.client.dsl.Http4sClientDsl
 import org.http4s.dsl.io._
-import org.http4s.{EntityDecoder, Header, Uri}
+import org.http4s.{EntityDecoder, Header, Request, Uri}
 
 trait Session extends Http4sClientDsl[IO] {
   implicit val http: org.http4s.client.Client[IO]
 
-  def token: IO[String]
+  def token: IO[AuthToken]
+  def refreshToken: IO[AuthToken]
 
   def authenticatedGet[A](uri: Uri)(implicit d: EntityDecoder[IO, A]): IO[A] = {
     authenticatedGet_[A](uri)(d)
@@ -22,14 +23,16 @@ trait Session extends Http4sClientDsl[IO] {
       return IO.raiseError(
         new Exception("DCOS authentication failed too many times"))
 
-    val request = for {
+    val request: IO[Request[IO]] = for {
       authToken <- token
-      req <- GET(uri, Header("Authentication", authToken))
+      req <- GET(uri, Header("Authentication", authToken.getValue))
     } yield req
 
     http.fetch(request) {
       case Successful(resp) => resp.as[A]
-      case Unauthorized(_)  => authenticatedGet_(uri, retries - 1)(d)
+      case Unauthorized(_) =>
+        refreshToken
+        authenticatedGet_(uri, retries - 1)(d)
       case failedResponse =>
         IO.raiseError(UnexpectedStatus(failedResponse.status))
     }
