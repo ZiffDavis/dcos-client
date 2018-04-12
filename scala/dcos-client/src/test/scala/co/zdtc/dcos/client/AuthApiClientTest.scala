@@ -16,11 +16,11 @@ class AuthApiClientTest extends WordSpec with Matchers with MockFactory {
   val testPassword = "pass"
 
   val service = HttpService[IO] {
-    case req @ POST -> Root / "auth" / "login" =>
+    case req @ POST -> Root / "acs" / "api" / "v1" / "auth" / "login" =>
       for {
         login <- req.as[PasswordLogin]
         resp <- login match {
-          case PasswordLogin(`testName`, 0, Some(`testPassword`), _) =>
+          case PasswordLogin(`testName`, 0, `testPassword`, _) =>
             Ok(LoginResponse(testToken))
           case _ => NotFound()
         }
